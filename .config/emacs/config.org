@@ -1,0 +1,137 @@
+# -*- eval: (message "I got a message for you: \"YOU STUPID\"") -*-
+
+# I like to keep it clean
+#+STARTUP: overview hidestar
+
+# And want to default to these arguments
+#+PROPERTY: header-args :result silent :tangle yes
+
+* Package manager
+
+Boilerplate initialization
++ Initialize built-in package manager
++ Add MELPA to repository list
++ Use =use-package= for simpler management
++ Use =use-package-ensure= to allow ensure packages
+
+#+begin_src emacs-lisp
+  (require 'package)
+
+  (add-to-list
+   'package-archives '("melpa" . "https://melpa.org/packages/"))
+
+  ;; Require use-package for easier package include
+  ;; ??? use-package provides lot of macro, this should make loading it faster
+  (eval-when-compile
+    (require 'use-package))
+
+  (require 'use-package-ensure)
+#+end_src
+
+* Config
+
+** Evil and undo tree
+
+Not sure if they should stay together, but they are somewhat related in this
+config
+
+#+begin_src emacs-lisp
+  ;; Undo tree
+  ;; Use undo-tree to perform undo
+  (use-package undo-tree
+    :ensure t
+    :config
+    (global-undo-tree-mode))                      ; Set global mode
+
+  ;; Evil mode
+  (use-package evil
+    :ensure t
+    :init                                         ; ??? Evil-collection assumes this config
+    (setq evil-want-integration t) ; Default
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode 1)                                 ; Enable evil-mode by default
+    (evil-set-undo-system 'undo-tree))            ; Manage undo using undo-tree
+
+  ;; Prevent broken keybindings in some buffers
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+#+end_src
+
+** Visual config
+
+Purely visual config
+- Line numbers
+- Ruler column
+
+#+begin_src emacs-lisp
+  ;; Line numbering
+  (global-display-line-numbers-mode)              ; Display line number
+
+  ;; Display soft boundary for writing code
+  (setq display-fill-column-indicator-column t)
+  (global-display-fill-column-indicator-mode)
+#+end_src
+
+** Spell checker
+
+#+begin_src emacs-lisp
+  ;; Enables flyspell in text mode
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  ;; Enables flyspell just for comments in code and strings
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+#+end_src
+
+** LSP
+LSP UI and LSP itself
+
+#+begin_src emacs-lisp
+  ;; LSP UI
+  (use-package lsp-ui
+    :ensure nil                                   ; Do not install by default
+    :commands lsp-ui-mode)                        ; Use LSP UI
+
+  ;; LSP
+  (use-package lsp-mode
+    :ensure nil                                   ; Do not install by default
+    :commands lsp
+    :hook
+    (lsp-mode-hook . lsp-ui-mode))                ; Use lsp UI for lsp mode
+#+end_src
+
+** File-specific modes
+
+*** Markdown mode
+
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :config
+    (add-to-list
+     'auto-mode-alist                             ; Auto mode association list (associate exp to mode)
+     '("\\.md\\'" . markdown-mode)))              ; Double escape into string "\.md\'" which is regex for "*\.md$"
+#+end_src
+
+** Vertico for better search                                         :BROKEN:
+
+Vertico is cool to preview vertical results in search, unfortunately it
+doesn't work properly in *xargs* so it's disabled for the time being
+
+#+begin_src emacs-lisp :tangle no
+  (use-package vertico
+    :disabled t                                   ; Breaks with *xargs*
+    :ensure nil
+    :init
+    (vertico-mode))                               ; Enable it right away
+#+end_src
+
+* Security
+
+Ask before evaluating head
+
+#+begin_src emacs-lisp
+  (setq enable-local-eval 'query)
+#+end_src

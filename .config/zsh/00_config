@@ -1,0 +1,29 @@
+#!/bin/env zsh
+
+alias ls='ls --color=auto'
+alias ll='ls -al'
+
+alias rm='echo command \"rm\" has been disabled on this machine, use \"trash\" or call rm by full path \"/usr/bin/rm\"'
+
+export PAGER=less
+export EDITOR=nvim
+
+export MAKEFLAGS="-j$(nproc)"
+
+# Add bindings iwth
+# bindkey -s '<key>' "command"
+
+#           | It's a ^T "C-T"
+bindkey -s '' "tmux-sessionizer"
+
+# If on a wayland display, tty1
+if [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+	DATE=$(date +"%Y-%m-%d_%H-%M-%S")
+	echo "==$DATE" > "/tmp/sway.log"
+	echo "==$DATE" > "/tmp/sway.err"
+	
+	source $HOME/.config/sway/startup_var
+	exec sway --unsupported-gpu\
+		>> "/tmp/sway.log" \
+		2>> "/tmp/sway.err"
+fi
