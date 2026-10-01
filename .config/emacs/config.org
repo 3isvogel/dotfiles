@@ -7,13 +7,11 @@
 #+PROPERTY: header-args :result silent :tangle yes
 
 * Package manager
-
 Boilerplate initialization
 + Initialize built-in package manager
 + Add MELPA to repository list
 + Use =use-package= for simpler management
 + Use =use-package-ensure= to allow ensure packages
-
 #+begin_src emacs-lisp
   (require 'package)
 
@@ -31,10 +29,8 @@ Boilerplate initialization
 * Config
 
 ** Evil and undo tree
-
 Not sure if they should stay together, but they are somewhat related in this
 config
-
 #+begin_src emacs-lisp
   ;; Undo tree
   ;; Use undo-tree to perform undo
@@ -42,7 +38,6 @@ config
     :ensure t
     :config
     (global-undo-tree-mode))                      ; Set global mode
-
   ;; Evil mode
   (use-package evil
     :ensure t
@@ -52,7 +47,6 @@ config
     :config
     (evil-mode 1)                                 ; Enable evil-mode by default
     (evil-set-undo-system 'undo-tree))            ; Manage undo using undo-tree
-
   ;; Prevent broken keybindings in some buffers
   (use-package evil-collection
     :after evil
@@ -62,38 +56,38 @@ config
 #+end_src
 
 ** Visual config
-
 Purely visual config
 - Line numbers
 - Ruler column
-
 #+begin_src emacs-lisp
   ;; Line numbering
   (global-display-line-numbers-mode)              ; Display line number
-
   ;; Display soft boundary for writing code
   (setq display-fill-column-indicator-column t)
   (global-display-fill-column-indicator-mode)
 #+end_src
 
 ** Spell checker
-
 #+begin_src emacs-lisp
   ;; Enables flyspell in text mode
   (add-hook 'text-mode-hook 'flyspell-mode)
   ;; Enables flyspell just for comments in code and strings
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 #+end_src
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :ensure t)
+#+end_src
+
+#+RESULTS:
 
 ** LSP
 LSP UI and LSP itself
-
 #+begin_src emacs-lisp
   ;; LSP UI
   (use-package lsp-ui
     :ensure nil                                   ; Do not install by default
     :commands lsp-ui-mode)                        ; Use LSP UI
-
   ;; LSP
   (use-package lsp-mode
     :ensure nil                                   ; Do not install by default
@@ -105,7 +99,6 @@ LSP UI and LSP itself
 ** File-specific modes
 
 *** Markdown mode
-
 #+begin_src emacs-lisp
   (use-package markdown-mode
     :ensure t
@@ -116,10 +109,8 @@ LSP UI and LSP itself
 #+end_src
 
 ** Vertico for better search                                         :BROKEN:
-
 Vertico is cool to preview vertical results in search, unfortunately it
 doesn't work properly in *xargs* so it's disabled for the time being
-
 #+begin_src emacs-lisp :tangle no
   (use-package vertico
     :disabled t                                   ; Breaks with *xargs*
@@ -128,10 +119,42 @@ doesn't work properly in *xargs* so it's disabled for the time being
     (vertico-mode))                               ; Enable it right away
 #+end_src
 
+** Org mode
+
+*** Org agenda
+Configure agenda
+- View
+  - Show 2 weeks
+  - Starts view on monday
+#+begin_src emacs-lisp
+  (setq org-agenda-span 14)
+  (setq org-agenda-start-on-weekday 1)
+#+end_src
+ - Set the default location for agenda files to =~/.org/agenda=
+#+begin_src emacs-lisp
+  (setq org-agenda-files '("~/.org/agenda"))
+#+end_src
+- Add shortcuts to quickly open agenda and the agenda index file
+#+begin_src emacs-lisp
+  ;; Ideally want to avoid this
+  (defun org-agenda-open-index ()
+    "Opens the agenda index file"
+    (interactive)
+    (find-file (expand-file-name "index.org" (car org-agenda-files))))
+  (keymap-global-set "C-c a" 'org-agenda)
+  (keymap-global-set "C-c s" 'org-agenda-open-index)
+#+end_src
+>I would like for the ="C-c s"= keybinding to be available without defining a global function
+
+- Agenda directory missing will result in errors, ensure the directory exists
+#+begin_src emacs-lisp
+  (let ((agenda-file (car org-agenda-files)))
+    (if (not (file-exists-p agenda-file))
+        (make-directory agenda-file)))
+#+end_src
+
 * Security
-
 Ask before evaluating head
-
 #+begin_src emacs-lisp
   (setq enable-local-eval 'query)
 #+end_src
