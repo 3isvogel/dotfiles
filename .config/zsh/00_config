@@ -27,3 +27,10 @@ if [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
 		>> "/tmp/sway.log" \
 		2>> "/tmp/sway.err"
 fi
+if [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 2 ]; then
+	exec /usr/lib/plasma-dbus-run-session-if-needed /usr/bin/startplasma-wayland
+fi
+
+if [ -z "${I3SOCK}" ] && [ "${XDG_VTNR}" -eq 3 ]; then
+	exec startx /usr/bin/env i3
+fi

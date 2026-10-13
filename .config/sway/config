@@ -71,7 +71,7 @@ input type:keyboard {
 #   LeftShift + RightShift cycle throught layouts
 #    xkb_layout "eu"
 	xkb_layout us
-	xkb_options caps:ctrl_shifted_capslock,composite:ralt,grp:shifs_toggle
+	xkb_options caps:ctrl_shifted_capslock,compose:ralt,grp:shifs_toggle
 }
 #
 # You can also configure each device individually.
