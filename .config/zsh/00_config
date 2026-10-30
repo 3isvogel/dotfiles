@@ -5,6 +5,8 @@ alias ll='ls -al'
 
 alias rm='echo command \"rm\" has been disabled on this machine, use \"trash\" or call rm by full path \"/usr/bin/rm\"'
 
+alias vim=nvim
+
 export PAGER=less
 export EDITOR=nvim
 
@@ -14,7 +16,8 @@ export MAKEFLAGS="-j$(nproc)"
 # bindkey -s '<key>' "command"
 
 #           | It's a ^T "C-T"
-bindkey -s '' "tmux-sessionizer"
+#                                 | And here is a ^M "C-M"
+bindkey -s '' "tmux-sessionizer "
 
 # If on a wayland display, tty1
 if [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then

@@ -4,7 +4,7 @@
 #
 # Read `man 5 sway` for a complete reference.
 
-### Variables
+### Variables {{{
 #
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
@@ -27,19 +27,25 @@ set $suspend_delay 30
 # Wallpaper
 set $wallpaper "$HOME/Pictures/.wallpaper"
 set $lock_bg "$HOME/Pictures/.screensaver"
+# }}}
 
-### Output configuration
+### Output configuration {{{
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 #
 # Example configuration:
 #
+# Set 1.6 scale for integrated display
+output eDP-1 scale 1.6
+#
+# Set properties for external dispay
 #   output HDMI-A-1 resolution 1920x1080 position 1920,0
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
+# }}}
 
-### Idle configuration
+### Idle configuration {{{
 #
 # Example configuration:
 #
@@ -51,31 +57,36 @@ exec swayidle -w \
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
 # resumed. It will also lock your screen before your computer goes to sleep.
+# }}}
 
-### Input configuration
+### Input configuration {{{
 #
-# Example configuration:
-#
-#   input type:touchpad {
-#       dwt enabled
-#       tap enabled
-#       natural_scroll enabled
-#       middle_emulation enabled
-#   }
+# Disable natural scroll for each input method
+input * {
+    natural_scroll disabled
+}
+# Configuration specific for touchpad
+input "type:touchpad" {
+    dwt enabled # Disable When Typing
+    tap enabled
+    middle_emulation enabled
+}
 #
 input type:keyboard {
-# For more info 'man 7 xkeyboard-config'
-# Set some keys
-#   CapsLock behave as Ctrl, Shift + CapsLock behave like CapsLock
+# Read `man 7 xkeyboard-config` for a complete reference.
+#
+#   US layout
+    xkb_layout us
+#   CapsLock behave as Ctrl
 #   RightAlt compose key
 #   LeftShift + RightShift cycle throught layouts
 #    xkb_layout "eu"
-	xkb_layout us
-	xkb_options caps:ctrl_shifted_capslock,compose:ralt,grp:shifs_toggle
+    xkb_options ctrl:nocaps,compose:ralt,grp:shift_toggle
 }
 #
 # You can also configure each device individually.
 # Read `man 5 sway-input` for more information about this section.
+# }}}
 
 ### Key bindings
 #

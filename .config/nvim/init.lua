@@ -29,7 +29,8 @@ set.backup = false
 set.undodir = os.getenv('HOME') .. '/.vim/undodir'
 set.undofile = true
 -- attempt autoformatting on save using default LSP
-vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
+-- vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
+-- }}}
 
 -- Diagnostic {{{
 -- -- Opt:
@@ -48,30 +49,35 @@ vim.diagnostic.config({
 -- vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
 -- }}}
 
+-- Visuals {{{
 -- Show tabs and trailing characters
 set.list = true
 set.listchars = {
-  tab = '» ',
-  trail = '·',
-  extends = '›',
-  precedes = '‹',
-  nbsp = '␣',
+    tab = '» ',
+    trail = '·',
+    extends = '›',
+    precedes = '‹',
+    nbsp = '␣',
 }
 vim.api.nvim_set_hl(0, "Whitespace", { link = "DiagnosticError", force = true })
+vim.cmd.colorscheme "catppuccin-nvim"
+-- }}}
+
+-- Spellcheck {{{
 -- Autocommand for selected extensions: enable spell checker
+-- Make spell checker matches more visible
+vim.api.nvim_set_hl(0, "SpellBad", { fg = "#ffffff", bg = "#880000", bold = true })
+vim.api.nvim_set_hl(0, "SpellCap", { fg = "#ffffff", bg = "#000088", bold = true })
+vim.api.nvim_set_hl(0, "SpellRare", { fg = "#ffffff", bg = "#CCCC00", bold = true })
+vim.api.nvim_set_hl(0, "SpellLocal", { fg = "#ffffff", bg = "#008800", bold = true })
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = {"tex", "md"
+    pattern = { "tex", "md"
     },
     callback = function()
         vim.opt_local.spell = true
         vim.opt_local.spelllang = { "en_us" }
     end,
 })
--- Make spell checker matches more visible
-vim.api.nvim_set_hl(0, "SpellBad",   { fg = "#ffffff", bg = "#880000", bold = true })
-vim.api.nvim_set_hl(0, "SpellCap",   { fg = "#ffffff", bg = "#000088", bold = true })
-vim.api.nvim_set_hl(0, "SpellRare",  { fg = "#ffffff", bg = "#CCCC00", bold = true })
-vim.api.nvim_set_hl(0, "SpellLocal", { fg = "#ffffff", bg = "#008800", bold = true })
 -- }}}
 
 -- Mappings {{{
